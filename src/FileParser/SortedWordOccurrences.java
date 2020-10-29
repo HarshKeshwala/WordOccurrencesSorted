@@ -1,7 +1,9 @@
 package FileParser;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +25,9 @@ public class SortedWordOccurrences {
 		File file = new File("/Users/harshkeshwala/Documents/JavaWorkspace/HarshSanjayCodeTest/src/paragraph.txt"); 
         FileInputStream fileInputStream = new FileInputStream(file); 
        
+        //Path of HTML file to print result in
+        File file2 = new File("/Users/harshkeshwala/Documents/JavaWorkspace/HarshSanjayCodeTest/src/result.html");
+
         Scanner inputFile = new Scanner(fileInputStream);
 
         //Arraylist to store the words parsed from the paragraph
@@ -64,6 +69,29 @@ public class SortedWordOccurrences {
             System.out.println("Word = " + en.getKey() +  
                           ", Count = " + en.getValue()); 
         }
+	    
+	    //Writing data in to HTML files
+	    try 
+	    {	
+       	 BufferedWriter bw = new BufferedWriter(new FileWriter(file2));
+       	 bw.write("<div><center><h1>Word count occurrence</h1>");
+       	 bw.write("<table border='1'>");
+       	 bw.write("<tr><td>Words</td><td>Occurrence</td></tr>");
+       
+       	 for(Map.Entry<String, Integer> en : sortedMap.entrySet())
+       	 {
+            bw.write("<tr><td>"+ en.getKey()+ "</td><td>" +en.getValue()+"</tr>");
+         }
+       	 
+       	 bw.write("</table>");
+       	 bw.write("</center></div>");
+       	 bw.close();
+       	 
+	    }
+	    catch(IOException e)
+	    {
+	    	e.printStackTrace();
+	    }
 	}
 	
 	// Method to sort words based on occurrence
