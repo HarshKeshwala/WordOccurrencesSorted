@@ -1,0 +1,41 @@
+
+  <HTML>
+    <HEAD>
+   		<CENTER>
+      		<H1>Word Occurrences Report</H1>
+     	<CENTER>
+     	<style>
+			TABLE, TH, TD
+			{
+			  border: 1px solid black;
+			  border-collapse: collapse;
+			  padding: 10px;
+			  width: 40%;
+			}
+		</style>
+    </HEAD>
+
+    <BODY>
+      <CENTER>
+
+      <TABLE>
+      	<TR>
+      		<TD><CENTER><STRONG>WORDS</STRONG><CENTER></TD>
+      		<TD><CENTER><STRONG>COUNTS</STRONG><CENTER></TD>
+      	</TR>
+      
+        #foreach($i in $map)
+          <TR>
+            <TD><CENTER>$i.getKey()</CENTER></TD>
+            <TD><CENTER>$i.getValue()</CENTER></TD>
+          </TR>
+        #end
+      </TABLE>
+      
+      </br>
+      </br>
+     <I>By Harsh Sanjay Keshwala</I>
+      </CENTER>
+ 
+    </BODY>
+  </HTML>

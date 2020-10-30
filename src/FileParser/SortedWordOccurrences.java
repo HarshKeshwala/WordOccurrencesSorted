@@ -1,10 +1,10 @@
 package FileParser;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -17,10 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 
-public class SortedWordOccurrences {
 
-	
+public class SortedWordOccurrences
+{
+
 	public static void main(String[] args)  throws Exception 
 	{
 		//Path of the input file
@@ -106,28 +110,33 @@ public class SortedWordOccurrences {
 	// Methods to write result into the HTML file
 	public static void printReportToHTML(HashMap<String, Integer> sortedMap, Path pathOutputFile) throws Exception
 	{
-	    //Writing data in to HTML files
-	    try 
-	    {	
-       	 BufferedWriter bw = new BufferedWriter(new FileWriter(pathOutputFile.toFile()));
-       	 bw.write("<div><center><h1>Word count occurrence</h1>");
-       	 bw.write("<table border='1'>");
-       	 bw.write("<tr><td>Words</td><td>Occurrence</td></tr>");
-       
-       	 for(Map.Entry<String, Integer> en : sortedMap.entrySet())
-       	 {
-            bw.write("<tr><td>"+ en.getKey()+ "</td><td>" +en.getValue()+"</tr>");
-         }
-       	 
-       	 bw.write("</table>");
-       	 bw.write("</center></div>");
-       	 bw.close();
-       	 
-	    }
-	    catch(IOException e)
-	    {
-	    	e.printStackTrace();
-	    }
+		// Apache velocity to embed results in to HTML template
+		VelocityEngine ve = new VelocityEngine();
+		ve.init();
+		
+		//HTML template to define format for output
+		Template t = ve.getTemplate("src/html_template.vt");
+		
+		VelocityContext context = new VelocityContext();
+		
+		//Assigning HashMap to the list to iterate in template
+		List<Map.Entry<String, Integer> > list = 
+	               new LinkedList<Map.Entry<String, Integer> >(sortedMap.entrySet()); 
+		
+		
+		//Assigning key "map" to the list
+		context.put("map",list);
+    
+		StringWriter writer = new StringWriter();
+		
+		t.merge(context, writer);
+			
+		//Writing output with HTML template as an output file
+		BufferedWriter bw = new BufferedWriter(new FileWriter(pathOutputFile.toFile()));
+	
+		bw.write(writer.toString());
+	     
+	   	bw.close();
 
 	}
 }
