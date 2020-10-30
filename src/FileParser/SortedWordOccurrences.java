@@ -1,13 +1,14 @@
 package FileParser;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -49,35 +49,41 @@ public class SortedWordOccurrences
 	{
 		
 		FileInputStream fileInputStream = new FileInputStream(pathInputFile.toFile()); 
-	       
-		Scanner inputFile = new Scanner(fileInputStream);
-		
-		//Arraylist to store the words parsed from the paragraph
-        ArrayList<String> data = new ArrayList<String>();
+		InputStreamReader input = new InputStreamReader(fileInputStream); 
+        BufferedReader reader = new BufferedReader(input);
 
-        //Adding words to the Arraylist from paragraph file
-        while(inputFile.hasNext()) {
-        	data.add(inputFile.next());
+		String line;
+
+		HashMap<String, Integer> wordsMap = new HashMap<String, Integer>();
+  
+		//Reading words from the paragraph file
+        while((line = reader.readLine()) != null)
+        {	
+        	if(!line.trim().equals(""))
+        	{
+	        	String[] data = line.split("[ \\n\\t\\r:;.]");
+	        	
+	        	//Storing words in to HashMap based on Occurrences from ArrayList
+	        	for(String s: data)
+	        	{
+	        		if(s == null || s.trim().equals("")) {
+	        			continue; // skip if found empty spaces
+	        		}
+	        		s = s.toLowerCase();	//convert each word to lower case
+	    	        if (wordsMap.containsKey(s))
+	    	        {
+	    	        	wordsMap.put(s, wordsMap.get(s) + 1);
+	    	        } else
+	    	        {
+	    	        	wordsMap.put(s, 1);
+	    	        }
+	    	        System.out.println(s);
+	        	}
+        	}
         }
-       
-        inputFile.close();
-        fileInputStream.close();
 
-        HashMap<String, Integer> wordsMap = new HashMap<String, Integer>();
-        
-        //Storing words in to HashMap based on Occurrences from ArrayList
-	    for (String s : data)
-	    {
-	    	s = s.toLowerCase();	//convert each word to lower case
-	        if (wordsMap.containsKey(s))
-	        {
-	        	wordsMap.put(s, wordsMap.get(s) + 1);
-	        } else
-	        {
-	        	wordsMap.put(s, 1);
-	        }
-	    }
-		
+        input.close();
+        fileInputStream.close();
 		return wordsMap;
 	}
 	
